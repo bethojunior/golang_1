@@ -3,22 +3,17 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+
+	"uno/src/structs"
 )
 
-type User struct {
-	ID    uint   `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}
-
-// Funções CRUD de usuários (exemplos simples)
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Usuário criado"})
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	users := []User{
+	users := []structs.UserStruct{
 		{ID: 1, Name: "João", Email: "joao@email.com"},
 		{ID: 2, Name: "Maria", Email: "maria@email.com"},
 	}
@@ -27,7 +22,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(User{ID: 1, Name: "João", Email: "joao@email.com"})
+	json.NewEncoder(w).Encode(structs.UserStruct{ID: 1, Name: "João", Email: "joao@email.com"})
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
