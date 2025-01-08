@@ -3,22 +3,14 @@ package repositories
 import (
 	"encoding/json"
 	"net/http"
-
-	"uno/src/structs"
-	// "uno/src/database"
-
 	"gorm.io/gorm"
-	
+	"uno/src/models"
 )
 
 var db *gorm.DB
 
-// func InitializeDatabase(dsn string) error {
-// 	database.InitDatabase();
-// }
-
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	var user structs.UserStruct
+	var user models.UserStructModel
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
@@ -34,7 +26,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
-	var users []structs.UserStruct
+	var users []models.UserStructModel
 	if err := db.Find(&users).Error; err != nil {
 		http.Error(w, "Failed to fetch users", http.StatusInternalServerError)
 		return
@@ -50,7 +42,7 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user structs.UserStruct
+	var user models.UserStructModel
 	if err := db.First(&user, id).Error; err == gorm.ErrRecordNotFound {
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
@@ -70,13 +62,13 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user structs.UserStruct
+	var user models.UserStructModel
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)
 		return
 	}
 
-	//user.ID = id // Garantir que o ID seja definido
+	//user.ID = id // fix: Garantir que o ID seja definido
 	if err := db.Model(&user).Updates(user).Error; err != nil {
 		http.Error(w, "Failed to update user", http.StatusInternalServerError)
 		return
@@ -93,7 +85,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := db.Delete(&structs.UserStruct{}, id).Error; err != nil {
+	if err := db.Delete(&models.UserStructModel{}, id).Error; err != nil {
 		http.Error(w, "Failed to delete user", http.StatusInternalServerError)
 		return
 	}

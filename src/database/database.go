@@ -1,7 +1,7 @@
 package database
 
 import (
-	"log"
+	"uno/src/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -9,11 +9,17 @@ import (
 
 var DB *gorm.DB
 
-func InitDatabase() {
+func InitializeDatabase(dsn string) error {
 	var err error
-	DB, err = gorm.Open(postgres.Open("app.db"), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Erro ao conectar ao banco de dados:", err)
+		return err
 	}
-	log.Println("Banco de dados conectado")
+	return nil
+}
+
+func MigrateDatabase() error {
+	DB.AutoMigrate(&models.BlogStructModel{})
+	DB.AutoMigrate(&models.UserStructModel{})
+	return nil
 }
